@@ -3,7 +3,7 @@ import random
 
 def mk_dict(data_path):
     with open(data_path, "r") as fs:
-        lines = fs.readlines()
+        lines = fs.read().lower().split("\n")
     
     words = []
     [[words.append(word) for word in line.split(" ")] for line in lines]
@@ -24,9 +24,9 @@ def save_dict(dict_, save_path):
 
 def read_sentence(read_path):
     with open(read_path, "r") as fs:
-        lines = fs.readlines
+        lines = fs.read().lower().split("\n")
 
-    return [line.split("\n")[0] for line in lines]
+    return lines
 
 def convert_sentence2index(sentence, dict_, max_time_step):
     indexs = [dict_.index(word) for word in sentence.split(" ")]
@@ -41,7 +41,6 @@ def extract_a_word(sentences, word_nums):
     input_ = []
     for sentence, idx in zip(sentences, choiced_label_idx):
         c_sentence = list(sentence[:])
-        print(c_sentence[idx], c_sentence)
         del(c_sentence[idx])
         input_.append(c_sentence)
 
@@ -52,9 +51,9 @@ def mk_train_func(batch_size, max_time_step, sentence_read_path, dict_read_path)
     sentence = np.array(read_sentence(sentence_read_path))
     sentence = sentence[:-(sentence.shape[0]%batch_size)]
 
-    word_num = []
-    dump = []
     def func():
+        dump = []
+        word_num = []
         t_len = len(sentence)
         while True:
             if len(dump) != t_len:
@@ -71,8 +70,8 @@ def mk_train_func(batch_size, max_time_step, sentence_read_path, dict_read_path)
                     word_num = np.array(word_num)
 
                 idx = random.sample(range(len(dump)), batch_size)
-                choiced_s = dump[idx].to_list()
-                choiced_word_num = word_num[idx].to_list()
+                choiced_s = dump[idx].tolist()
+                choiced_word_num = word_num[idx].tolist()
 
             yield extract_a_word(choiced_s, choiced_word_num)
     return func
