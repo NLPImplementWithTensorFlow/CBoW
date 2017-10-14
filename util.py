@@ -35,8 +35,11 @@ def convert_sentence2index(sentence, dict_, max_time_step):
         indexs.append(len(dict_)) # Add <EOS>
     return np.array(indexs[:max_time_step]), num_words
 
-def extract_a_word(list_):
-   pass 
+def extract_a_word(sentences, word_nums, batch_size):
+    choiced_label_idx = [random.choice(word_num) for word_num in word_nums]
+    label = [sentence[idx] for sentence, idx in zip(sentences, choiced_label_idx)]
+    input_ = 
+    return input_, label
 
 def mk_train_func(batch_size, max_time_step, sentence_read_path, dict_read_path):
     dict_ = read_dict(dict_read_path)
@@ -60,9 +63,9 @@ def mk_train_func(batch_size, max_time_step, sentence_read_path, dict_read_path)
                     dump = np.array(dump)
                     word_num = np.array(word_num)
 
-                choiced_s = dump[random.sample(range(len(dump)), batch_size)].to_lis()
+                choiced_s = dump[random.sample(range(len(dump)), batch_size)].to_list()
 
-            
+            s
 
 
             
