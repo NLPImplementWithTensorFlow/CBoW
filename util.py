@@ -35,10 +35,16 @@ def convert_sentence2index(sentence, dict_, max_time_step):
         indexs.append(len(dict_)) # Add <EOS>
     return np.array(indexs[:max_time_step]), num_words
 
-def extract_a_word(sentences, word_nums, batch_size):
-    choiced_label_idx = [random.choice(word_num) for word_num in word_nums]
+def extract_a_word(sentences, word_nums):
+    choiced_label_idx = [random.choice(range(word_num)) for word_num in word_nums]
     label = [sentence[idx] for sentence, idx in zip(sentences, choiced_label_idx)]
-    input_ = 
+    input_ = []
+    for sentence, idx in zip(sentences, choiced_label_idx):
+        c_sentence = list(sentence[:])
+        print(c_sentence[idx], c_sentence)
+        del(c_sentence[idx])
+        input_.append(c_sentence)
+
     return input_, label
 
 def mk_train_func(batch_size, max_time_step, sentence_read_path, dict_read_path):
@@ -56,18 +62,17 @@ def mk_train_func(batch_size, max_time_step, sentence_read_path, dict_read_path)
                 converted = [convert_sentence2index(s, dict_, max_time_step) for s in sentence[random_selected_index].tolist()]
                 choiced_s = [tuple_[0] for tuple_ in converted]
                 dump += choiced_s
-                word_num += [tuple_[1] for tuple_ in converted]
+                choiced_word_num = [tuple_[1] for tuple_ in converted]
+                word_num += choiced_word_num
                 np.delete(sentence, random_selected_index)
             else:
                 if type(np.array([])) != type(dump):
                     dump = np.array(dump)
                     word_num = np.array(word_num)
 
-                choiced_s = dump[random.sample(range(len(dump)), batch_size)].to_list()
+                idx = random.sample(range(len(dump)), batch_size)
+                choiced_s = dump[idx].to_list()
+                choiced_word_num = word_num[idx].to_list()
 
-            s
-
-
-            
-            yield 
-
+            yield extract_a_word(choiced_s, choiced_word_num)
+    return func
