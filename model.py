@@ -6,7 +6,7 @@ class model():
     def __init__(self, args):
         self.args = args
 
-        with tf.variable_scope("CBow"):
+        with tf.variable_scope("CBoW"):
             self.input = tf.placeholder(dtype=tf.int32, shape=(None, args.max_time_step), name="input")
             self.indices = tf.placeholder(dtype=tf.int32, shape=(args.batch_size), name="indices")
 
