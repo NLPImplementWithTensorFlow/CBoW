@@ -24,8 +24,6 @@ class model():
             logits = tf.layers.dense(h_in, args.vocab_size)
 
             target = tf.one_hot(self.indices, args.vocab_size, 1.0, 0.0)
-            ##shape [batch_size, vocab_size]
-
             self.loss = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = target))
 
     def train(self):
