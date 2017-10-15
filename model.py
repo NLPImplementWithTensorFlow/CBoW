@@ -21,17 +21,18 @@ class model():
                     h_in.append(embedded)
 
             h_in = tf.reduce_sum(tf.convert_to_tensor(h_in, dtype=tf.float32), axis=0)
-            logit = tf.layers.dense(h_in, args.vocab_size)
+            logits = tf.layers.dense(h_in, args.vocab_size)
 
             target = tf.one_hot(self.indices, args.vocab_size, 1.0, 0.0)
-            print(target.get_shape().as_list())
+            ##shape [batch_size, vocab_size]
 
-            self.loss = tf.nn.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(logit = logit, labels = target))
+            self.loss = tf.reduce_sum(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = target))
 
     def train(self):
         optimizer = tf.train.GradientDescentOptimizer(self.args.lr).minimize(self.loss)
         
-        yield_data_function = mk_train_func(self.args.batch_size, self.args.max_time_step, self.args.data_path, self.args.dict_path) 
+        yield_data_function = mk_train_func(self.args.batch_size, self.args.max_time_step+1, self.args.data_path, self.args.dict_path) 
+
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
         config.log_device_placement = True
