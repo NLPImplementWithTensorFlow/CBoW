@@ -27,7 +27,8 @@ class model():
 
     def train(self):
         optimizer = tf.train.GradientDescentOptimizer(self.args.lr).minimize(self.loss)
-
+        
+        yield_data_function = mk_train_func(self.args.batch_size, self.args.max_time_step, self.args.data_path, self.args.dict_path) 
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
         config.log_device_placement = True
@@ -35,9 +36,8 @@ class model():
             sess.run(tf.global_variables_initializer())
             saver = tf.train.Saver(tf.global_variables())
 
-            for itr in range(self.args.itr):
-                
-                loss_, _ = sess.run([self.loss, optimizer], feed_dict={self.input:, self.indices:})
+            for itr, (input_, label_) in enumerate(yield_data_function()):
+                loss_, _ = sess.run([self.loss, optimizer], feed_dict={self.input:input_, self.indices:label_})
                 
                 if itr % 50 == 0:
                     print(itr, ":  ", loss_)
@@ -45,4 +45,13 @@ class model():
                 if itr % 200 == 0:
                     saver.save(sess, "saved/model.ckpt", itr)
                     print("-----save model-----")
+
+                if itr == self.args.itr:
+                    break
             
+    def get_embedding_weight(self):
+        saver = tf.train.Saver(tf.global_variables())
+        with tf.Session() as sess:
+            saver.restore(sess, "saved/model.ckpt")
+            weight = sess.run(self.weight)
+        return weight
