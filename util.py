@@ -3,7 +3,7 @@ import random
 
 def mk_metadata(dict_path):
     dict_ = read_dict(dict_path)
-    with open("metadata.tsv", "w") as fs:
+    with open("saved/metadata.tsv", "w") as fs:
         fs.write("Index\tLabel\n")
         for index, label in enumerate(dict_):
             fs.write("%d\t%s\n" %(index, label))

@@ -16,13 +16,13 @@ if __name__ == "__main__":
     parser.add_argument("--train", dest="train", type=bool, default=True)
     args = parser.parse_args()
 
+    if not os.path.exists("saved"):
+        os.mkdir("saved")
+
     if not os.path.exists(args.dict_path):
         dict_ = mk_dict(args.data_path)
         save_dict(dict_, args.dict_path)
         mk_metadata(args.dict_path)
-
-    if not os.path.exists("saved"):
-        os.mkdir("saved")
 
     model_ = model(args)
     if args.train:

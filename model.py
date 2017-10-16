@@ -36,7 +36,7 @@ class model():
         project_config = projector.ProjectorConfig()
         embedding = project_config.embeddings.add()
         embedding.tensor_name = self.weight.name
-        embedding.metadata_path = "metadata.tsv"
+       # embedding.metadata_path = "saved/metadata.tsv"
         projector.visualize_embeddings(summary_writer, project_config)
 
         config = tf.ConfigProto()
