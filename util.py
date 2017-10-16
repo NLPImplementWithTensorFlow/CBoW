@@ -1,6 +1,13 @@
 import numpy as np
 import random
 
+def mk_metadata(dict_path):
+    dict_ = read_dict(dict_path)
+    with open("metadata.tsv", "w") as fs:
+        fs.write("Index\tLabel\n")
+        for index, label in enumerate(dict_):
+            fs.write("%d\t%s\n" %(index, label))
+
 def mk_dict(data_path):
     with open(data_path, "r") as fs:
         lines = fs.read().lower().split("\n")
