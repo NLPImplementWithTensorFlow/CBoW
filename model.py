@@ -1,6 +1,7 @@
 import tensorflow as tf
 import numpy as np
 from util import *
+from tensorflow.contrib.tensorboard.plugins import projector
 
 class model():
     def __init__(self, args):
@@ -30,6 +31,13 @@ class model():
         optimizer = tf.train.GradientDescentOptimizer(self.args.lr).minimize(self.loss)
         
         yield_data_function = mk_train_func(self.args.batch_size, self.args.max_time_step+1, self.args.data_path, self.args.dict_path) 
+
+        summary_writer = tf.summary.FileWriter("saved")
+        project_config = projector.ProjectorConfig()
+        embedding = project_config.embeddings.add()
+        embedding.tensor_name = self.weight.name
+        embedding.metadata_path = "metadata.tsv"
+        projector.visualize_embeddings(summary_writer, project_config)
 
         config = tf.ConfigProto()
         config.gpu_options.allow_growth = True
